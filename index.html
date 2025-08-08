@@ -1,11 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RevoU Project</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To-Do List Modern | Mini Project RevoU</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script defer src="js/script.js"></script>
+  <!-- Tailwind CDN jika ingin pakai -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+  <style>
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  </style>
+
 </head>
-<body>
-  
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 font-sans">
+  <div class="container mx-auto p-6 mt-8 max-w-3xl bg-white rounded-lg shadow-lg border border-gray-200">
+    <h1 class="text-3xl font-bold text-center text-purple-700 mb-6">📋 To-Do List</h1>
+    
+    <!-- Statistik -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="bg-white hover:bg-pink-100 transition duration-300 shadow rounded p-4 text-center">
+        <p class="text-sm text-gray-500">TOTAL TASKS</p>
+        <p id="total-tasks" class="text-2xl font-bold text-purple-600">0</p>
+      </div>
+      <div class="bg-white hover:bg-pink-100 transition duration-300 shadow rounded p-4 text-center">
+        <p class="text-sm text-gray-500">COMPLETED</p>
+        <p id="completed-tasks" class="text-2xl font-bold text-green-500">0</p>
+      </div>
+      <div class="bg-white hover:bg-pink-100 transition duration-300 shadow rounded p-4 text-center">
+        <p class="text-sm text-gray-500">PENDING</p>
+        <p id="pending-tasks" class="text-2xl font-bold text-yellow-500">0</p>
+      </div>
+      <div class="bg-white hover:bg-pink-100 transition duration-300 shadow rounded p-4 text-center">
+        <p class="text-sm text-gray-500">PROGRESS</p>
+        <p id="progress" class="text-2xl font-bold text-blue-500">0%</p>
+      </div>
+    </div>
+    <!-- Form tambah tugas -->
+    <form id="todo-form" class="flex flex-col md:flex-row gap-4 mb-4">
+      <input type="text" id="todo-input" placeholder="Add a todo..." class="flex-1 p-3 border rounded" required/>
+      <input type="date" id="todo-date" class="p-3 border rounded" required/>
+      <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-4 rounded">+ Add</button>
+    </form>
+
+  <div class="flex justify-between items-center mb-4">
+  <!-- Filter Button & Menu -->
+  <div class="relative">
+    <button id="filter-toggle" type="button" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-800 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none">
+      <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z"/>
+      </svg>
+      Filter
+    </button>
+    <div id="filter-menu" class="origin-top-left absolute left-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
+      <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="filter-toggle">
+        <button data-filter="all" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">All Tasks</button>
+        <button data-filter="pending" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Pending</button>
+        <button data-filter="completed" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Completed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete All Button -->
+  <button id="clear-all" class="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded">
+  Delete All
+</button>
+</div>
+    <!-- Daftar tugas -->
+    <table class="w-full bg-white rounded shadow">
+      <thead>
+       <tr class="border-b">
+         <th class="p-3 text-center">Task</th>
+         <th class="p-3 text-center">Due Date</th>
+         <th class="p-3 text-center">Status</th>
+         <th class="p-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="todo-list">
+      </tbody>
+    </table>
+  <footer class="mt-6 pt-4 border-t text-center text-sm text-pink-500">
+  <p class="flex items-center justify-center gap-1">
+    Made with 
+    <svg class="w-4 h-4 text-red-400 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/>
+    </svg>
+    by <span class="font-semibold">Novi Yuliani</span>
+  </p>
+  <p class="text-xs text-gray-400 mt-1">© 2025 All rights reserved</p>
+</footer>
+  </div>
 </body>
 </html>

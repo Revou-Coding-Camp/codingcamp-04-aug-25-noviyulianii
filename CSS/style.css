@@ -1,0 +1,37 @@
+body {
+  background: linear-gradient(to bottom right, #f3e8ff, #e0f2fe);
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.7s ease-in-out both;
+}
+
+tbody tr:hover {
+  background-color: #fef3f7; /* pink pastel */
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid #a78bfa; /* ungu soft */
+  accent-color: #a78bfa; /* warna centang */
+}
