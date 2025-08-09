@@ -13,32 +13,14 @@ const progressEl = document.getElementById("progress");
 const filterToggle = document.getElementById("filter-toggle");
 const filterMenu = document.getElementById("filter-menu");
 
+// Ambil data dari localStorage atau buat array kosong
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let currentFilter = "all";
 
-// Render saat pertama load
-renderTasks();
-
-// Submit form
-form.addEventListener("submit", e => {
-  e.preventDefault();
-  const taskText = input.value.trim();
-  const taskDate = dateInput.value;
-
-  if (taskText === "" || taskDate === "") return;
-
-  const task = {
-    id: Date.now(),
-    text: taskText,
-    date: taskDate,
-    completed: false
-  };
-
-  tasks.push(task);
-  saveTasks();
-  renderTasks();
-  form.reset();
-});
+// Simpan data ke localStorage
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
 // Render daftar tugas
 function renderTasks() {
@@ -77,7 +59,41 @@ function renderTasks() {
   updateStats();
 }
 
-// Toggle status
+// Update statistik
+function updateStats() {
+  const total = tasks.length;
+  const completed = tasks.filter(t => t.completed).length;
+  const pending = total - completed;
+  const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+  totalEl.textContent = total;
+  completedEl.textContent = completed;
+  pendingEl.textContent = pending;
+  progressEl.textContent = progress + "%";
+}
+
+// Tambah tugas
+form.addEventListener("submit", e => {
+  e.preventDefault();
+  const taskText = input.value.trim();
+  const taskDate = dateInput.value;
+
+  if (taskText === "" || taskDate === "") return;
+
+  const task = {
+    id: Date.now(),
+    text: taskText,
+    date: taskDate,
+    completed: false
+  };
+
+  tasks.push(task);
+  saveTasks();
+  renderTasks();
+  form.reset();
+});
+
+// Ubah status tugas
 function toggleStatus(id) {
   tasks = tasks.map(t =>
     t.id === id ? { ...t, completed: !t.completed } : t
@@ -93,20 +109,7 @@ function deleteTask(id) {
   renderTasks();
 }
 
-// Update statistik
-function updateStats() {
-  const total = tasks.length;
-  const completed = tasks.filter(t => t.completed).length;
-  const pending = total - completed;
-  const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
-
-  totalEl.textContent = total;
-  completedEl.textContent = completed;
-  pendingEl.textContent = pending;
-  progressEl.textContent = progress + "%";
-}
-
-// Hapus semua
+// Hapus semua tugas
 clearBtn.addEventListener("click", () => {
   if (confirm("Are you sure you want to delete all tasks?")) {
     tasks = [];
@@ -129,7 +132,5 @@ filterMenu.querySelectorAll("button").forEach(btn => {
   });
 });
 
-// Simpan ke localStorage
-function saveTasks() {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+// Render awal saat halaman dimuat
+renderTasks();
