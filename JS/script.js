@@ -10,8 +10,14 @@ const completedEl = document.getElementById("completed-tasks");
 const pendingEl = document.getElementById("pending-tasks");
 const progressEl = document.getElementById("progress");
 
-let tasks = [];
+const filterToggle = document.getElementById("filter-toggle");
+const filterMenu = document.getElementById("filter-menu");
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let currentFilter = "all";
+
+// Render saat pertama load
+renderTasks();
 
 // Submit form
 form.addEventListener("submit", e => {
@@ -29,6 +35,7 @@ form.addEventListener("submit", e => {
   };
 
   tasks.push(task);
+  saveTasks();
   renderTasks();
   form.reset();
 });
@@ -37,7 +44,6 @@ form.addEventListener("submit", e => {
 function renderTasks() {
   list.innerHTML = "";
 
-  // filter
   let filteredTasks = tasks;
   if (currentFilter === "completed") {
     filteredTasks = tasks.filter(t => t.completed);
@@ -45,26 +51,24 @@ function renderTasks() {
     filteredTasks = tasks.filter(t => !t.completed);
   }
 
-  // Jika kosong
   if (filteredTasks.length === 0) {
     const row = document.createElement("tr");
-    row.innerHTML = `<td colspan="4" class="p-4 text-center text-gray-400">No tasks found</td>`;
+    row.innerHTML = `<td colspan="4" class="p-4 text-center text-gray-400 text-sm sm:text-base">No tasks found</td>`;
     list.appendChild(row);
     updateStats();
     return;
   }
 
-  // Looping
   filteredTasks.forEach(task => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td class="p-3 text-center ${task.completed ? "line-through text-gray-500" : ""}">${task.text}</td>
-      <td class="p-3 text-center">${task.date}</td>
+      <td class="p-3 text-center text-xs sm:text-sm ${task.completed ? "line-through text-gray-500" : ""}">${task.text}</td>
+      <td class="p-3 text-center text-xs sm:text-sm">${task.date}</td>
       <td class="p-3 text-center">
         <input type="checkbox" ${task.completed ? "checked" : ""} onchange="toggleStatus(${task.id})">
       </td>
       <td class="p-3 text-center">
-        <button onclick="deleteTask(${task.id})" class="text-red-500 hover:text-red-700">Delete</button>
+        <button onclick="deleteTask(${task.id})" class="text-red-500 hover:text-red-700 text-xs sm:text-sm">Delete</button>
       </td>
     `;
     list.appendChild(row);
@@ -78,12 +82,14 @@ function toggleStatus(id) {
   tasks = tasks.map(t =>
     t.id === id ? { ...t, completed: !t.completed } : t
   );
+  saveTasks();
   renderTasks();
 }
 
 // Hapus satu tugas
 function deleteTask(id) {
   tasks = tasks.filter(t => t.id !== id);
+  saveTasks();
   renderTasks();
 }
 
@@ -104,14 +110,12 @@ function updateStats() {
 clearBtn.addEventListener("click", () => {
   if (confirm("Are you sure you want to delete all tasks?")) {
     tasks = [];
+    saveTasks();
     renderTasks();
   }
 });
 
 // Filter menu toggle
-const filterToggle = document.getElementById("filter-toggle");
-const filterMenu = document.getElementById("filter-menu");
-
 filterToggle.addEventListener("click", () => {
   filterMenu.classList.toggle("hidden");
 });
@@ -124,3 +128,8 @@ filterMenu.querySelectorAll("button").forEach(btn => {
     filterMenu.classList.add("hidden");
   });
 });
+
+// Simpan ke localStorage
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
